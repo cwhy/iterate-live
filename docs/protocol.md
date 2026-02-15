@@ -2,11 +2,11 @@
 
 ## Overview
 
-ElixirKit is a TCP-based protocol for communication between the Wails host launcher and the Elixir release. It uses Erlang's `{packet, 4}` framing (4-byte big-endian length prefix).
+ElixirKit is a TCP-based protocol for communication between the Go host and the Elixir release. It uses Erlang's `{packet, 4}` framing (4-byte big-endian length prefix).
 
 ## Connection
 
-1. Host (Wails/Go) listens on a random local TCP port (`127.0.0.1:0`)
+1. Host (Go) listens on a random local TCP port (`127.0.0.1:0`)
 2. Host sets `ELIXIRKIT_PORT` environment variable and starts the Elixir release
 3. Elixir connects back to the host on that port
 

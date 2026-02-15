@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 
@@ -12,7 +11,6 @@ import (
 )
 
 type App struct {
-	ctx      context.Context
 	bridge   *bridge.ElixirKit
 	runtime  *launcher.Runtime
 	readyURL string
@@ -20,17 +18,6 @@ type App struct {
 
 func NewApp() *App {
 	return &App{}
-}
-
-func (a *App) Startup(ctx context.Context) {
-	a.ctx = ctx
-
-	// Run the actual startup in a goroutine to not block Wails
-	go func() {
-		if err := a.start(); err != nil {
-			log.Printf("[Host] Failed to start: %v", err)
-		}
-	}()
 }
 
 func (a *App) start() error {
@@ -82,7 +69,7 @@ func (a *App) OpenBrowser() {
 	}
 }
 
-func (a *App) Shutdown(ctx context.Context) {
+func (a *App) Shutdown() {
 	log.Println("[Host] Shutting down...")
 	if a.bridge != nil {
 		a.bridge.Close()

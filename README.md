@@ -1,6 +1,6 @@
 # Iterate Live
 
-A template for building desktop applications with Phoenix LiveView. Uses Wails as the native host to launch an Elixir release, then opens the system browser to the Phoenix app running on localhost.
+A template for building desktop applications with Phoenix LiveView. Uses a lightweight Go host that lives in the macOS menu bar to launch an Elixir release, then opens the system browser to the Phoenix app running on localhost.
 
 ## Quick Start
 
@@ -19,8 +19,8 @@ make build && make run
 
 ```
 ┌─────────────────┐       TCP        ┌─────────────────┐
-│   Wails Host    │◄────────────────►│  Elixir/Phoenix │
-│   (Go binary)   │   ElixirKit      │    (Release)    │
+│  Tray Host (Go) │◄────────────────►│  Elixir/Phoenix │
+│   (menu bar)    │   ElixirKit      │    (Release)    │
 └────────┬────────┘                  └────────┬────────┘
          │                                    │
          │ opens                              │ serves
@@ -31,12 +31,13 @@ make build && make run
 └─────────────────────────────────────────────────────┘
 ```
 
-1. Wails host starts and listens on a random TCP port
-2. Host launches the Elixir release with `ELIXIRKIT_PORT` set
-3. Phoenix boots and connects back via ElixirKit
-4. Elixir sends `ready:http://localhost:4000`
-5. Host opens the system browser
-6. On quit, host closes TCP connection → Elixir exits cleanly
+1. App launches as a macOS menu bar icon (no Dock icon)
+2. Host starts and listens on a random TCP port
+3. Host launches the Elixir release with `ELIXIRKIT_PORT` set
+4. Phoenix boots and connects back via ElixirKit
+5. Elixir sends `ready:http://localhost:4000`
+6. Host opens the system browser
+7. On quit (tray menu), host closes TCP connection → Elixir exits cleanly
 
 ## Project Structure
 
@@ -48,10 +49,12 @@ iterate-live/
 │   │   ├── elixirkit.ex    # Bridge public API
 │   │   └── elixirkit/      # Bridge GenServer
 │   └── mix.exs
-├── host/                   # Wails/Go project
+├── host/                   # Go system tray host
 │   ├── bridge/             # TCP server (Go side)
 │   ├── launcher/           # Elixir process manager
-│   └── main.go
+│   ├── main.go             # Systray entry point
+│   ├── app.go              # App lifecycle
+│   └── icon.go             # Embedded tray icon
 ├── scripts/                # Build & packaging
 ├── docs/                   # Documentation
 └── Makefile
@@ -59,14 +62,14 @@ iterate-live/
 
 ## Commands
 
-| Command        | Description                              |
-|----------------|------------------------------------------|
-| `make dev`     | Run Phoenix in dev mode (hot reload)     |
-| `make build`   | Build Elixir release + Wails host        |
-| `make run`     | Run the desktop app                      |
-| `make package` | Create distributable `.dmg`              |
-| `make test`    | Run tests                                |
-| `make clean`   | Remove build artifacts                   |
+| Command                | Description                              |
+|------------------------|------------------------------------------|
+| `make dev`             | Run Phoenix in dev mode (hot reload)     |
+| `make build`           | Build Elixir release + Go host + .app    |
+| `make run`             | Run the host binary directly             |
+| `make package`         | Create distributable `.dmg`              |
+| `make test`            | Run tests                                |
+| `make clean`           | Remove build artifacts                   |
 
 ## Using as a Template
 
@@ -74,10 +77,9 @@ To start a new project from this template:
 
 1. Clone/copy this repository
 2. Rename `app` module in `app/mix.exs` and `app/lib/`
-3. Update `host/wails.json` with your app name
-4. Set your bundle ID in `host/build/darwin/Info.plist`
-5. Replace the icon at `host/build/appicon.png`
-6. Run `make build && make run`
+3. Update the bundle ID in `host/build/darwin/Info.plist`
+4. Replace the icon at `host/build/appicon.png`
+5. Run `make build && make run`
 
 ## Documentation
 
@@ -91,7 +93,5 @@ To start a new project from this template:
 - Erlang/OTP 27+
 - Elixir 1.18+
 - Go 1.23+
-- Node.js 22+
-- Wails 2.9+
 
 See [docs/build.md](docs/build.md) for installation instructions.

@@ -1,39 +1,46 @@
 package main
 
 import (
-	"embed"
 	"log"
 
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"fyne.io/systray"
 )
-
-//go:embed all:frontend/dist
-var assets embed.FS
 
 func main() {
 	app := NewApp()
+	systray.Run(app.OnReady, app.OnExit)
+}
 
-	// Run Wails with a minimal window (browser is the real UI)
-	err := wails.Run(&options.App{
-		Title:     "App Host",
-		Width:     400,
-		Height:    200,
-		MinWidth:  400,
-		MinHeight: 200,
-		AssetServer: &assetserver.Options{
-			Assets: assets,
-		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.Startup,
-		OnShutdown:       app.Shutdown,
-		Bind: []interface{}{
-			app,
-		},
-	})
+// onReady sets up the system tray icon and menu items.
+func (a *App) OnReady() {
+	systray.SetIcon(iconData)
+	systray.SetTooltip("Iterate Live")
 
-	if err != nil {
-		log.Printf("Error: %v", err)
-	}
+	mOpen := systray.AddMenuItem("Open in Browser", "Open the app in your browser")
+	systray.AddSeparator()
+	mQuit := systray.AddMenuItem("Quit", "Quit Iterate Live")
+
+	// Start the Elixir app in the background
+	go func() {
+		if err := a.start(); err != nil {
+			log.Printf("[Host] Failed to start: %v", err)
+		}
+	}()
+
+	// Handle menu clicks
+	go func() {
+		for {
+			select {
+			case <-mOpen.ClickedCh:
+				a.OpenBrowser()
+			case <-mQuit.ClickedCh:
+				systray.Quit()
+			}
+		}
+	}()
+}
+
+// onExit performs graceful shutdown when the tray app quits.
+func (a *App) OnExit() {
+	a.Shutdown()
 }

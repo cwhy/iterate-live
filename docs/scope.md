@@ -2,11 +2,12 @@
 
 ## MVP Behavior
 
-1. User launches the app (double-click `.app` / `.exe`)
-2. Wails allocates a local TCP port, sets `ELIXIRKIT_PORT`, starts the Elixir release
-3. Elixir boots Phoenix, connects back to Wails via ElixirKit, publishes `ready:<url>`
-4. Wails receives `ready`, opens the system browser to the URL
-5. User quits (menu/tray) → Wails sends shutdown signal, waits for clean Elixir exit
+1. User launches the app (double-click `.app` or run binary)
+2. App appears as a menu bar icon (system tray) — no Dock icon
+3. Host allocates a local TCP port, sets `ELIXIRKIT_PORT`, starts the Elixir release
+4. Elixir boots Phoenix, connects back to host via ElixirKit, publishes `ready:<url>`
+5. Host receives `ready`, opens the system browser to the URL
+6. User quits via tray menu → Host sends shutdown signal, waits for clean Elixir exit
 
 ## Non-Goals (MVP)
 

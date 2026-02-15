@@ -27,12 +27,13 @@ kill -9 <PID>
 
 **Debug:**
 ```bash
-# Run the host and watch logs
-cd host && ./build/bin/host.app/Contents/MacOS/host
+# Run the host binary directly and watch logs
+cd host && go build -o build/bin/iterate-live . && ./build/bin/iterate-live
 
 # Look for:
-# - "[ElixirKit] Connected to host on port XXXX"
-# - "[ElixirKit] Sent ready"
+# - "[Host] ElixirKit listening on port XXXX"
+# - "[Host] Elixir connected"
+# - "[Host] Opening browser to http://localhost:4000"
 ```
 
 **Solutions:**
@@ -79,7 +80,7 @@ pkill -9 -f "beam.smp"
 ```
 
 **Prevention:**
-- Always quit via the app menu, not force-kill
+- Always quit via the tray menu, not force-kill
 - The host has a 5-second timeout before force-killing
 
 ## ElixirKit Connection Failed
@@ -112,13 +113,13 @@ mix deps.get
 MIX_ENV=prod mix release app
 ```
 
-### Wails/Go
+### Go Host
 
 ```bash
 # Clear and retry
 cd host
-rm -rf build
-wails build
+rm -rf build/bin
+CGO_ENABLED=1 go build -o build/bin/iterate-live .
 ```
 
 ### Asset Compilation
@@ -141,7 +142,7 @@ mix assets.deploy
 **Workaround (development only):**
 ```bash
 # Remove quarantine attribute
-xattr -cr /path/to/host.app
+xattr -cr /path/to/IterateLive.app
 
 # Or allow in System Preferences > Security & Privacy
 ```
@@ -153,5 +154,5 @@ xattr -cr /path/to/host.app
 | Component | Log Location                          |
 |-----------|---------------------------------------|
 | Phoenix   | stdout/stderr (visible in host logs)  |
-| Wails     | stdout when run from terminal         |
+| Go Host   | stdout when run from terminal         |
 | Release   | `app/_build/prod/rel/app/tmp/log/`    |
