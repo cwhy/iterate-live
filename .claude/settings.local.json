@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mix test:*)",
+      "Bash(mix compile:*)",
+      "Bash(MIX_ENV=prod mix deps.get:*)",
+      "Bash(MIX_ENV=prod mix assets.deploy:*)",
+      "Bash(MIX_ENV=prod mix release:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "elixir-phoenix-guide@elixir-phoenix-guide": true
+  }
+}

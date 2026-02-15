@@ -1,0 +1,40 @@
+# Elixir/Phoenix
+app/_build/
+app/deps/
+app/.fetch
+app/*.ez
+app/*.beam
+app/erl_crash.dump
+app/.elixir_ls/
+
+# Phoenix assets
+app/assets/node_modules/
+app/priv/static/assets/
+
+# Generated on crash
+app/erl_crash.dump
+
+# Wails/Go
+host/build/
+host/frontend/node_modules/
+host/frontend/dist/
+host/erl_crash.dump
+
+# Distribution
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+*.local.exs
