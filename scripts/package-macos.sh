@@ -33,7 +33,7 @@ mkdir -p "$APP_BUNDLE/Contents/Resources"
 
 cp "$HOST_BUILD/iterate-live" "$APP_BUNDLE/Contents/MacOS/iterate-live"
 cp "$ROOT_DIR/host/build/darwin/Info.plist" "$APP_BUNDLE/Contents/Info.plist"
-cp "$ROOT_DIR/host/build/appicon.png" "$APP_BUNDLE/Contents/Resources/appicon.png"
+cp "$ROOT_DIR/host/assets/iterate-logo.png" "$APP_BUNDLE/Contents/Resources/appicon.png"
 
 # Copy Elixir release into bundle
 mkdir -p "$APP_BUNDLE/Contents/Resources/rel/app"

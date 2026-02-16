@@ -5,7 +5,9 @@
       "Bash(mix compile:*)",
       "Bash(MIX_ENV=prod mix deps.get:*)",
       "Bash(MIX_ENV=prod mix assets.deploy:*)",
-      "Bash(MIX_ENV=prod mix release:*)"
+      "Bash(MIX_ENV=prod mix release:*)",
+      "Bash(make build-host:*)",
+      "Bash(sips:*)"
     ]
   },
   "enabledPlugins": {

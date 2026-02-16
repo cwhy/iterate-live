@@ -16,6 +16,7 @@ app/erl_crash.dump
 
 # Wails/Go
 host/build/
+host/assets/tray-icon.png
 host/frontend/node_modules/
 host/frontend/dist/
 host/erl_crash.dump

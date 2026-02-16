@@ -1,17 +1,23 @@
 # Makefile for iterate-live
 
-.PHONY: dev build-release build-host build-app-bundle build run package test clean deps
+.PHONY: dev build-release build-host build-app-bundle build run package test clean deps generate-icons
 
 # Development - run Phoenix in dev mode (no host)
 dev:
 	cd app && mix phx.server
+
+# Generate icons from SVG (macOS only)
+generate-icons:
+	@mkdir -p host/assets
+	qlmanage -t -s 44 -o host/assets/ assets/iterate-logo.svg 2>/dev/null
+	@mv host/assets/iterate-logo.svg.png host/assets/tray-icon.png
 
 # Build the Elixir release
 build-release:
 	cd app && MIX_ENV=prod mix deps.get && MIX_ENV=prod mix assets.deploy && MIX_ENV=prod mix release app --overwrite
 
 # Build the Go host binary
-build-host:
+build-host: generate-icons
 	cd host && CGO_ENABLED=1 go build -o build/bin/iterate-live .
 
 # Assemble macOS .app bundle
@@ -21,7 +27,7 @@ build-app-bundle: build-host build-release
 	@mkdir -p host/build/bin/IterateLive.app/Contents/Resources
 	@cp host/build/bin/iterate-live host/build/bin/IterateLive.app/Contents/MacOS/iterate-live
 	@cp host/build/darwin/Info.plist host/build/bin/IterateLive.app/Contents/Info.plist
-	@cp host/build/appicon.png host/build/bin/IterateLive.app/Contents/Resources/appicon.png
+	@cp host/assets/iterate-logo.png host/build/bin/IterateLive.app/Contents/Resources/appicon.png
 	@cp -R app/_build/prod/rel/app host/build/bin/IterateLive.app/Contents/Resources/rel/app
 	@echo "==> IterateLive.app ready at host/build/bin/IterateLive.app"
 
