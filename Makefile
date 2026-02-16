@@ -26,7 +26,7 @@ build-app-bundle: build-host build-release
 	@mkdir -p host/build/bin/IterateLive.app/Contents/MacOS
 	@mkdir -p host/build/bin/IterateLive.app/Contents/Resources
 	@cp host/build/bin/iterate-live host/build/bin/IterateLive.app/Contents/MacOS/iterate-live
-	@cp host/build/darwin/Info.plist host/build/bin/IterateLive.app/Contents/Info.plist
+	@cp host/darwin/Info.plist host/build/bin/IterateLive.app/Contents/Info.plist
 	@cp host/assets/iterate-logo.png host/build/bin/IterateLive.app/Contents/Resources/appicon.png
 	@cp -R app/_build/prod/rel/app host/build/bin/IterateLive.app/Contents/Resources/rel/app
 	@echo "==> IterateLive.app ready at host/build/bin/IterateLive.app"
